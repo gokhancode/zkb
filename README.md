@@ -49,9 +49,14 @@ ZuriBudget/
 │   │   ├── SecureFileManager.swift        # Secure file handling & auto-delete
 │   │   └── DataProtectionManager.swift    # Encryption & data protection
 │   ├── Views/
-│   │   └── (TBD: HomeView, etc.)
+│   │   ├── HomeView.swift                 # Main dashboard
+│   │   ├── FinancialSummaryView.swift     # Income/Expense cards
+│   │   ├── TransactionListView.swift      # Full transaction list
+│   │   ├── TransactionRowView.swift       # Transaction row component
+│   │   ├── DryRunView.swift               # Import preview
+│   │   └── PDFImportView.swift            # PDF upload UI
 │   ├── ViewModels/
-│   │   └── (TBD)
+│   │   └── HomeViewModel.swift            # Dashboard business logic
 │   └── Design/
 │       └── ZKBColors.swift                # Swiss design system & colors
 ├── PRIVACY_POLICY.md                      # Complete privacy documentation
@@ -174,20 +179,48 @@ See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for complete privacy documentation.
 - [x] Authentication lock screen
 - [x] Security status dashboard
 
-### 🚧 Next Phases (TBD)
+### ✅ Phase 2: UI Implementation (COMPLETED)
 
-- [ ] Phase 2: UI Implementation
-  - [ ] HomeView with Swiss grid layout
-  - [ ] FileImporter integration
-  - [ ] Transaction list view
-  - [ ] Dry-run verification view
+**Dashboard:**
+- [x] HomeView with Swiss grid layout
+- [x] Balance header with gradient background
+- [x] FinancialSummaryView (2-column income/expense cards)
+- [x] Recent transactions list (last 5)
+- [x] Floating action button for quick import
+
+**Transaction Management:**
+- [x] TransactionListView with search and filters
+- [x] Category filter (13 categories)
+- [x] Transaction type filter (debit/credit)
+- [x] TransactionRowView component
+- [x] Context menu for deletion
+- [x] Empty states
+
+**PDF Import Flow:**
+- [x] PDFImportView with FileImporter
+- [x] DryRunView for preview before saving
+- [x] Loading overlay during parsing
+- [x] Error handling with alerts
+- [x] Automatic PDF deletion after import
+
+**ViewModel:**
+- [x] HomeViewModel with business logic
+- [x] Statistics calculation (balance, income, expenses)
+- [x] PDF import handling
+- [x] Swiss currency formatting
+
+### 🚧 Next Phases (Optional)
+
 - [ ] Phase 3: Charts & Visualization
   - [ ] Swift Charts integration
-  - [ ] Minimalist chart styling
-- [ ] Phase 4: Refinement
+  - [ ] Monthly spending breakdown
+  - [ ] Category distribution chart
+  - [ ] Income vs. expenses trend
+- [ ] Phase 4: Advanced Features
   - [ ] User settings
-  - [ ] Category editing
-  - [ ] Export functionality
+  - [ ] Category customization
+  - [ ] Data export (CSV/JSON)
+  - [ ] Budget limits and alerts
 
 ## Swiss Formatting Examples
 
