@@ -216,18 +216,37 @@ See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for complete privacy documentation.
 - [x] PDF import handling
 - [x] Swiss currency formatting
 
-### 🚧 Next Phases (Optional)
+### ✅ Phase 3: Charts & Visualization (COMPLETED)
 
-- [ ] Phase 3: Charts & Visualization
-  - [ ] Swift Charts integration
-  - [ ] Monthly spending breakdown
-  - [ ] Category distribution chart
-  - [ ] Income vs. expenses trend
-- [ ] Phase 4: Advanced Features
-  - [ ] User settings
-  - [ ] Category customization
-  - [ ] Data export (CSV/JSON)
-  - [ ] Budget limits and alerts
+**Analytics Dashboard:**
+- [x] ChartsView with comprehensive analytics
+- [x] ChartsViewModel for data processing
+- [x] CategoryChartView with pie/donut chart
+- [x] TrendChartView with income vs expenses line chart
+- [x] WeeklyBreakdownView with bar chart
+- [x] Navigation from HomeView
+
+**Chart Features:**
+- [x] Swiss minimalist styling (thin lines, no grid noise)
+- [x] Category spending distribution
+- [x] Monthly income vs expenses comparison
+- [x] Last 4 weeks spending breakdown
+- [x] Statistics cards (average, highest, lowest)
+- [x] Insights section (daily average, top category)
+- [x] Empty states for no data
+
+**Design:**
+- [x] Consistent with Swiss International Style
+- [x] ZKB color palette
+- [x] Minimal chart elements
+- [x] Clear data visualization
+
+### 🚧 Phase 4: Advanced Features (Optional)
+
+- [ ] User settings
+- [ ] Category customization
+- [ ] Data export (CSV/JSON)
+- [ ] Budget limits and alerts
 
 ## Swiss Formatting Examples
 

@@ -17,6 +17,7 @@ struct HomeView: View {
     @State private var viewModel = HomeViewModel()
     @State private var showImportSheet = false
     @State private var showAllTransactions = false
+    @State private var showCharts = false
 
     var body: some View {
         NavigationStack {
@@ -58,6 +59,12 @@ struct HomeView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button {
+                            showCharts = true
+                        } label: {
+                            Label("Analytics", systemImage: "chart.xyaxis.line")
+                        }
+
+                        Button {
                             showAllTransactions = true
                         } label: {
                             Label("All Transactions", systemImage: "list.bullet")
@@ -97,6 +104,9 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showAllTransactions) {
                 TransactionListView()
+            }
+            .sheet(isPresented: $showCharts) {
+                ChartsView()
             }
             .alert("Import Error", isPresented: $viewModel.showError) {
                 Button("OK", role: .cancel) {}
