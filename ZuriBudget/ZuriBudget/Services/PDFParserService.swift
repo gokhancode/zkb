@@ -51,7 +51,19 @@ final class PDFParserService {
 
     // MARK: - Public Methods
 
-    /// Parse a ZKB PDF statement
+    /// Securely parse a ZKB PDF statement with automatic file deletion
+    /// - Parameter url: URL to the PDF file (from file picker)
+    /// - Returns: ParseResult containing transactions and metadata
+    /// - Throws: SecureFileManager.FileError if validation or access fails
+    static func securelyParseZKBStatement(url: URL) throws -> ParseResult {
+        // Use SecureFileManager for secure access and automatic deletion
+        return try SecureFileManager.shared.securelyAccessFile(at: url) { secureURL in
+            // Parse the securely accessed file
+            return parseZKBStatement(url: secureURL)
+        }
+    }
+
+    /// Parse a ZKB PDF statement (internal method)
     /// - Parameter url: URL to the PDF file
     /// - Returns: ParseResult containing transactions and metadata
     static func parseZKBStatement(url: URL) -> ParseResult {
@@ -60,9 +72,33 @@ final class PDFParserService {
         var parseErrors: [String] = []
         let fileName = url.lastPathComponent
 
+        // Validate file size (additional security check)
+        if let fileSize = SecureFileManager.shared.fileSize(at: url),
+           fileSize > SecureFileManager.maxFileSize {
+            parseErrors.append("File too large: \(SecureFileManager.shared.formattedFileSize(at: url))")
+            return ParseResult(
+                transactions: [],
+                rawLines: [],
+                parseErrors: parseErrors,
+                fileName: fileName
+            )
+        }
+
         // Load PDF
         guard let pdfDocument = PDFDocument(url: url) else {
             parseErrors.append("Failed to load PDF document")
+            return ParseResult(
+                transactions: [],
+                rawLines: [],
+                parseErrors: parseErrors,
+                fileName: fileName
+            )
+        }
+
+        // Additional security: Limit page count to prevent DoS
+        let maxPages = 100
+        guard pdfDocument.pageCount <= maxPages else {
+            parseErrors.append("PDF has too many pages (\(pdfDocument.pageCount)). Maximum: \(maxPages)")
             return ParseResult(
                 transactions: [],
                 rawLines: [],
@@ -245,7 +281,26 @@ final class PDFParserService {
 
     // MARK: - Validation Helpers
 
-    /// Validate if a file appears to be a ZKB statement
+    /// Securely validate if a file appears to be a ZKB statement
+    /// - Parameter url: URL to the PDF file (from file picker)
+    /// - Returns: Validation result
+    static func securelyValidateZKBStatement(url: URL) -> (isValid: Bool, reason: String) {
+        do {
+            // First validate with SecureFileManager
+            try SecureFileManager.shared.validateFile(at: url)
+
+            // Then validate ZKB-specific content
+            return try SecureFileManager.shared.securelyAccessFile(at: url) { secureURL in
+                return validateZKBStatement(url: secureURL)
+            }
+        } catch let error as SecureFileManager.FileError {
+            return (false, error.localizedDescription)
+        } catch {
+            return (false, "Validation error: \(error.localizedDescription)")
+        }
+    }
+
+    /// Validate if a file appears to be a ZKB statement (internal method)
     static func validateZKBStatement(url: URL) -> (isValid: Bool, reason: String) {
         guard let pdfDocument = PDFDocument(url: url) else {
             return (false, "Invalid PDF file")
@@ -255,10 +310,20 @@ final class PDFParserService {
             return (false, "PDF has no pages")
         }
 
+        // Security: Check page count limit
+        guard pdfDocument.pageCount <= 100 else {
+            return (false, "PDF has too many pages (potential security risk)")
+        }
+
         // Check first page for ZKB indicators
         guard let firstPage = pdfDocument.page(at: 0),
               let content = firstPage.string?.lowercased() else {
             return (false, "Cannot read PDF content")
+        }
+
+        // Security: Limit content size to prevent memory issues
+        guard content.count < 1_000_000 else {
+            return (false, "PDF content too large")
         }
 
         // Look for ZKB-specific text

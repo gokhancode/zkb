@@ -38,20 +38,67 @@ Based on ZKB's brand identity:
 ```
 ZuriBudget/
 ├── ZuriBudget/
-│   ├── ZuriBudgetApp.swift          # App entry point with SwiftData config
+│   ├── ZuriBudgetApp.swift                # App entry with security & auth
 │   ├── Models/
-│   │   ├── Transaction.swift         # SwiftData model for transactions
-│   │   ├── TransactionType.swift     # Enum: debit/credit
-│   │   └── Category.swift            # Enum: auto-categorization logic
+│   │   ├── Transaction.swift              # SwiftData model for transactions
+│   │   ├── TransactionType.swift          # Enum: debit/credit
+│   │   └── Category.swift                 # Enum: auto-categorization logic
 │   ├── Services/
-│   │   └── PDFParserService.swift    # ZKB PDF parsing engine
+│   │   ├── PDFParserService.swift         # Secure ZKB PDF parsing
+│   │   ├── BiometricAuthService.swift     # Face ID/Touch ID authentication
+│   │   ├── SecureFileManager.swift        # Secure file handling & auto-delete
+│   │   └── DataProtectionManager.swift    # Encryption & data protection
 │   ├── Views/
 │   │   └── (TBD: HomeView, etc.)
 │   ├── ViewModels/
 │   │   └── (TBD)
 │   └── Design/
-│       └── ZKBColors.swift           # Swiss design system & colors
+│       └── ZKBColors.swift                # Swiss design system & colors
+├── PRIVACY_POLICY.md                      # Complete privacy documentation
 ```
+
+## Security Features 🔒
+
+ZüriBudget implements **bank-level security** for your financial data:
+
+### Multi-Layer Protection
+
+1. **Biometric Authentication**
+   - Face ID / Touch ID required on app launch (default: enabled)
+   - Automatic passcode fallback if biometrics unavailable
+   - Re-authentication required when returning from background
+
+2. **Data Encryption**
+   - SwiftData database encrypted with FileProtectionType.complete
+   - Data accessible only when device is unlocked
+   - All app directories protected with iOS Data Protection API
+
+3. **Secure File Handling**
+   - PDF files automatically deleted after parsing
+   - Secure overwrite with random data before deletion
+   - 10 MB file size limit (prevents DoS attacks)
+   - Temporary files stored in encrypted location
+
+4. **Memory Protection**
+   - Sensitive data cleared when app backgrounds
+   - URL cache purged on suspension
+   - Pasteboard cleared to prevent data leakage
+
+5. **Validation & Limits**
+   - PDF page count limited to 100 pages
+   - Content size validation (max 1 MB text)
+   - ZKB statement format verification
+   - File type restrictions (PDF only)
+
+### Privacy-First Design
+
+- **100% Local**: All data stored exclusively on-device
+- **No Network**: App works completely offline
+- **No Cloud Sync**: No iCloud or remote servers
+- **No Tracking**: Zero analytics or telemetry
+- **No Third Parties**: No external SDKs or services
+
+See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for complete privacy documentation.
 
 ## Core Features
 
@@ -102,14 +149,30 @@ ZuriBudget/
 
 ## Implementation Status
 
-### ✅ Phase 1: Models & Parser (COMPLETED)
+### ✅ Phase 1: Core Models, Parser & Security (COMPLETED)
 
+**Data Models:**
 - [x] SwiftData Transaction model
 - [x] TransactionType enum
 - [x] Category enum with auto-categorization (13 categories, 50+ keywords)
+
+**PDF Parsing:**
 - [x] PDFParserService with Swiss regex patterns
-- [x] ZKB color palette and design system
-- [x] App entry point with SwiftData configuration
+- [x] Secure file handling with auto-deletion
+- [x] File size and content validation
+
+**Security & Privacy:**
+- [x] BiometricAuthService (Face ID / Touch ID)
+- [x] SecureFileManager (auto-delete PDFs)
+- [x] DataProtectionManager (encryption & data protection)
+- [x] App lifecycle security handlers
+- [x] Memory protection on background
+- [x] Privacy Policy documentation
+
+**Design System:**
+- [x] ZKB color palette and Swiss design system
+- [x] Authentication lock screen
+- [x] Security status dashboard
 
 ### 🚧 Next Phases (TBD)
 
